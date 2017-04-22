@@ -1,0 +1,133 @@
+#include<iostream>
+typedef int ElemType;
+#define MaxSize 30
+using namespace std;
+typedef struct node {
+	ElemType data;
+	struct node *Left;
+	node *Right;
+	int hight;
+}AvlTree;
+
+int Height(AvlTree *p) {
+	if (p == NULL)
+		return 0;
+	else
+		return p->hight;
+}
+
+int Max(int m, int n) {
+	if (m > n)
+		return m;
+	else
+		return n;
+}
+AvlTree * SingleRoteWithLeft(AvlTree *T2) {
+	AvlTree *T1;
+	T1 = T2->Left;
+	//if(T2->Left!=NULL)
+		T2->Left = T1->Right;
+	T1->Right = T2;
+	T2->hight = Max(Height(T2->Left), Height(T2->Right)) + 1;
+	T1->hight = Max(Height(T1->Left), Height(T1->Right)) + 1;
+	return T1;
+}
+
+AvlTree * SingleRoteWithRight(AvlTree *T2) {
+	AvlTree *T1;
+	T1 = T2->Right;
+	//if (T2->Right != NULL)
+		T2->Right = T1->Left;
+	T1->Left = T2;
+	T2->hight = Max(Height(T2->Left), Height(T2->Right)) + 1;
+	T1->hight = Max(Height(T1->Left), Height(T1->Right)) + 1;
+	return T1;
+}
+
+AvlTree * DoubleRoteWithLeft(AvlTree *T3) {
+	T3->Left=SingleRoteWithRight(T3->Left);
+	return SingleRoteWithLeft(T3);
+}
+
+AvlTree * DoubleRoteWithRight(AvlTree *T3) {
+	T3->Right=SingleRoteWithLeft(T3->Left);
+	return SingleRoteWithRight(T3);
+}
+
+AvlTree * Insert(ElemType x, AvlTree *&T) {
+	if (T == NULL) {
+		T = new AvlTree;
+		T->data = x;
+		T->hight = 0;
+		T->Left = T->Right = NULL;
+	}
+	else if (x<T->data) {
+		T->Left=Insert(x, T->Left);
+		if (Height(T->Left) - Height(T->Right) == 2)
+			if (x < T->Left->data)
+			    T=SingleRoteWithLeft(T);
+			else
+				T=DoubleRoteWithLeft(T);
+	}
+	else if (x > T->data) {
+		Insert(x, T->Right);
+		if (Height(T->Right) - Height(T->Left) == 2)
+			if (x>T->Right->data)
+				T=SingleRoteWithRight(T);
+			else
+				T=DoubleRoteWithRight(T);
+	}
+	T->hight = Max(Height(T->Right), Height(T->Left)) + 1;
+	return T;
+}
+
+void DispBTNode(AvlTree *b) {
+	if (b != NULL) {
+		cout << b->data;
+		if (b->Left != NULL || b->Right != NULL) {
+			cout << "(";
+			DispBTNode(b->Left);
+			cout << ",";
+			DispBTNode(b->Right);
+			cout << ")";
+		}
+	}
+	cout << " ";
+}
+void DestoryBTNode(AvlTree *b) {
+	if (b != NULL) {
+		DestoryBTNode(b->Left);
+		DestoryBTNode(b->Right);
+		cout << " 销毁" << b->data;
+		delete[] b;
+	}
+}
+
+int main() {
+	AvlTree *T=NULL;
+	Insert(23, T);
+	DispBTNode(T);
+	Insert(19, T);
+	DispBTNode(T);
+	Insert(26, T);
+	DispBTNode(T);
+	Insert(29, T);
+	DispBTNode(T);
+	Insert(-6, T);
+	DispBTNode(T);
+	Insert(-4, T);
+	DispBTNode(T);
+	
+	for (int i = 5; i < 14; i++) {
+		Insert(i, T);
+		DispBTNode(T);
+	}
+	Insert(29, T);
+	DispBTNode(T);
+	Insert(-6, T);
+	DispBTNode(T);
+	Insert(-4, T);
+	DispBTNode(T);
+	DestoryBTNode(T);
+	return 0;
+}
