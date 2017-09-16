@@ -1,0 +1,70 @@
+#include<iostream>
+using namespace std;
+int main() {
+	int data[15];
+	for (int i = 0; i < 4; i ++ ) {
+		data[i] = i + 1;
+	}
+	int j;  // j是步数
+	int b[4] = { 0,1,2,3 };   //b是未移动的步数
+	int forw[4] = { -1,-1,-1,-1 };//移动的方向
+	int exchange;//交换位置使用
+	int n4;
+	int nn=4;//该移动的数字
+	for (;nn>1;) { //?
+		if (nn != 4) {
+			if (forw[nn-1] == -1) {
+				n4 = b[nn-1];
+				for (int ii = nn; ii < 4; ii ++ ) {
+					if (forw[ii] == -1)
+						nn++;
+				}
+			}
+			else {
+				n4 = nn-1-b[nn-1];
+				for (int ii = nn; ii < 4; ii++) {
+					if (forw[ii] == 1)
+						nn++;
+				}
+			}
+			exchange = data[n4];
+			data[n4] = data[n4 + forw[nn-1]];
+			data[n4 + forw[nn-1]] = exchange;
+			//
+			for (int i = 0; i < 4; i++) {
+				cout << data[i] << "  ";
+			}
+			//
+			cout << endl;
+			b[nn-1]--;
+			if (b[nn-1] == 0) {
+				nn--;
+				continue;
+			}
+			else {
+				for (int ii = nn; ii < 4; ii++) {
+					forw[ii] = -forw[ii];
+					b[nn] = nn - 1;
+				}
+			}
+		}
+		if (forw[3] == -1)
+			n4 = 3;
+		else
+			n4 = 0;
+		for (j=3;j>0;j--) {
+			exchange = data[n4];
+			data[n4] = data[n4 + forw[3]];
+			data[n4 + forw[3]] = exchange;
+			//
+			for (int i = 0; i < 4; i++) {
+				cout << data[i]<<"  ";
+			}
+			cout << endl;
+			//
+			n4 += forw[3];
+		}
+		nn = 3;
+	}
+	return 0;
+}
